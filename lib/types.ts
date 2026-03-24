@@ -25,7 +25,6 @@ export interface Playlist {
 
 export interface GenerateRequest {
   prompt: string;
-  pinnedTracks?: Track[];
   excludedTrackIds?: number[];
 }
 

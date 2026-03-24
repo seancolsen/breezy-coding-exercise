@@ -13,10 +13,8 @@ function formatTime(seconds: number): string {
 interface TrackCardProps {
   track: Track;
   index: number;
-  isPinned: boolean;
   isActive: boolean;
   onRemove: () => void;
-  onTogglePin: () => void;
   onPlay: () => void;
   onEnded: () => void;
 }
@@ -24,10 +22,8 @@ interface TrackCardProps {
 export default function TrackCard({
   track,
   index,
-  isPinned,
   isActive,
   onRemove,
-  onTogglePin,
   onPlay,
   onEnded,
 }: TrackCardProps) {
@@ -163,11 +159,7 @@ export default function TrackCard({
   return (
     <div>
       <div
-        className={`group flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50 ${
-          isPinned
-            ? "border border-indigo-200 bg-indigo-50/50 dark:border-indigo-800 dark:bg-indigo-950/30"
-            : ""
-        }`}
+        className="group flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
       >
         <span className="w-5 shrink-0 text-right text-xs text-zinc-400">
           {index + 1}
@@ -219,24 +211,6 @@ export default function TrackCard({
         </div>
 
         <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-          <button
-            onClick={onTogglePin}
-            className={`rounded-md p-1.5 transition-colors ${
-              isPinned
-                ? "text-indigo-600 dark:text-indigo-400"
-                : "text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-            }`}
-            title={isPinned ? "Unpin song" : "Pin song"}
-          >
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              {isPinned ? (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-              )}
-            </svg>
-          </button>
-
           <button
             onClick={onRemove}
             className="rounded-md p-1.5 text-zinc-400 transition-colors hover:text-red-500 dark:hover:text-red-400"

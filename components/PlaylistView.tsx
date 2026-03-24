@@ -6,18 +6,14 @@ import TrackCard from "./TrackCard";
 
 interface PlaylistViewProps {
   playlist: Playlist;
-  pinnedIds: Set<number>;
   onRemoveTrack: (trackId: number) => void;
-  onTogglePin: (trackId: number) => void;
   onRegenerate: () => void;
   isLoading: boolean;
 }
 
 export default function PlaylistView({
   playlist,
-  pinnedIds,
   onRemoveTrack,
-  onTogglePin,
   onRegenerate,
   isLoading,
 }: PlaylistViewProps) {
@@ -62,8 +58,7 @@ export default function PlaylistView({
       </div>
 
       <div className="text-xs text-zinc-400 dark:text-zinc-500">
-        {playlist.tracks.length} songs &middot;{" "}
-        {pinnedIds.size > 0 && `${pinnedIds.size} pinned`}
+        {playlist.tracks.length} songs
       </div>
 
       <div className="space-y-1">
@@ -72,10 +67,8 @@ export default function PlaylistView({
             key={track.id}
             track={track}
             index={i}
-            isPinned={pinnedIds.has(track.id)}
             isActive={activeTrackId === track.id}
             onRemove={() => onRemoveTrack(track.id)}
-            onTogglePin={() => onTogglePin(track.id)}
             onPlay={() => setActiveTrackId(track.id)}
             onEnded={() => handleTrackEnded(track.id)}
           />

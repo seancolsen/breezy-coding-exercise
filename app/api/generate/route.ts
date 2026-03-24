@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { interpretPrompt } from "@/lib/openai";
 import { searchTracks } from "@/lib/itunes";
-import { GenerateRequest, Track } from "@/lib/types";
+import { GenerateRequest } from "@/lib/types";
 
 function shuffle<T>(array: T[]): T[] {
   const a = [...array];
@@ -24,17 +24,15 @@ export async function POST(request: NextRequest) {
     }
 
     const intent = await interpretPrompt(body.prompt, {
-      pinnedTracks: body.pinnedTracks,
       excludedTrackIds: body.excludedTrackIds,
     });
 
     const searchResults = await searchTracks(intent.searchQueries);
 
     const excludeSet = new Set(body.excludedTrackIds ?? []);
-    const pinnedIds = new Set((body.pinnedTracks ?? []).map((t) => t.id));
 
     let filtered = searchResults.filter(
-      (t) => !excludeSet.has(t.id) && !pinnedIds.has(t.id)
+      (t) => !excludeSet.has(t.id)
     );
 
     if (intent.excludeTerms?.length) {
@@ -49,11 +47,7 @@ export async function POST(request: NextRequest) {
     }
 
     const shuffled = shuffle(filtered);
-    const pinned = body.pinnedTracks ?? [];
-    const slotsNeeded = intent.count - pinned.length;
-    const newTracks = shuffled.slice(0, Math.max(0, slotsNeeded));
-
-    const tracks: Track[] = [...pinned, ...newTracks];
+    const tracks = shuffled.slice(0, intent.count);
 
     return NextResponse.json({
       playlist: {

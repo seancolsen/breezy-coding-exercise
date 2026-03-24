@@ -4,12 +4,11 @@ import { useState, useCallback } from "react";
 import PromptInput from "@/components/PromptInput";
 import PlaylistView from "@/components/PlaylistView";
 import LoadingState from "@/components/LoadingState";
-import { Playlist, Track, GenerateResponse } from "@/lib/types";
+import { Playlist, GenerateResponse } from "@/lib/types";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
-  const [pinnedIds, setPinnedIds] = useState<Set<number>>(new Set());
   const [removedIds, setRemovedIds] = useState<Set<number>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,16 +22,11 @@ export default function Home() {
       setError(null);
 
       try {
-        const pinnedTracks: Track[] = regenerate && playlist
-          ? playlist.tracks.filter((t) => pinnedIds.has(t.id))
-          : [];
-
         const res = await fetch("/api/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             prompt: currentPrompt,
-            pinnedTracks: pinnedTracks.length > 0 ? pinnedTracks : undefined,
             excludedTrackIds:
               removedIds.size > 0 ? Array.from(removedIds) : undefined,
           }),
@@ -47,7 +41,6 @@ export default function Home() {
         setPlaylist(data.playlist);
 
         if (!regenerate) {
-          setPinnedIds(new Set());
           setRemovedIds(new Set());
         }
       } catch (err) {
@@ -58,32 +51,15 @@ export default function Home() {
         setIsLoading(false);
       }
     },
-    [prompt, playlist, pinnedIds, removedIds]
+    [prompt, removedIds]
   );
 
   function handleRemoveTrack(trackId: number) {
     if (!playlist) return;
     setRemovedIds((prev) => new Set(prev).add(trackId));
-    setPinnedIds((prev) => {
-      const next = new Set(prev);
-      next.delete(trackId);
-      return next;
-    });
     setPlaylist({
       ...playlist,
       tracks: playlist.tracks.filter((t) => t.id !== trackId),
-    });
-  }
-
-  function handleTogglePin(trackId: number) {
-    setPinnedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(trackId)) {
-        next.delete(trackId);
-      } else {
-        next.add(trackId);
-      }
-      return next;
     });
   }
 
@@ -118,9 +94,7 @@ export default function Home() {
           {playlist && (
             <PlaylistView
               playlist={playlist}
-              pinnedIds={pinnedIds}
               onRemoveTrack={handleRemoveTrack}
-              onTogglePin={handleTogglePin}
               onRegenerate={() => generate(true)}
               isLoading={isLoading}
             />

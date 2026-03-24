@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { PlaylistIntent, Track } from "./types";
+import { PlaylistIntent } from "./types";
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -15,16 +15,9 @@ Respond ONLY with valid JSON matching this schema. No markdown, no explanation o
 
 export async function interpretPrompt(
   prompt: string,
-  context?: { pinnedTracks?: Track[]; excludedTrackIds?: number[] }
+  context?: { excludedTrackIds?: number[] }
 ): Promise<PlaylistIntent> {
   let userMessage = prompt;
-
-  if (context?.pinnedTracks?.length) {
-    const pinned = context.pinnedTracks
-      .map((t) => `${t.artist} - ${t.title}`)
-      .join(", ");
-    userMessage += `\n\nThe user has pinned these songs (keep them and find similar ones): ${pinned}`;
-  }
 
   if (context?.excludedTrackIds?.length) {
     userMessage += `\n\nAvoid repeating previously suggested songs. Generate fresh, different search queries from before.`;
