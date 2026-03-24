@@ -1,23 +1,20 @@
 # AI playlist generator
 
-90-Minute Take-Home Challenge
-Playlist Copilot
-Build a small product that turns a natural-language playlist request into a useful result. The goal is to show
-how you scope, build, and iterate with AI tools under real time pressure.
-Duration
-90 minutes hard limit
-Required AI tooling
-Use Claude Code, Codex, Cursor, or a similar AI
-coding tool
-Required integration
-Use at least one real music-related external API
-or service
-Primary output
-A working prototype plus a short recording of
-your workflow
-Challenge
-Build a small product that helps a user turn a vague prompt into a playlist. The result should feel like a
-usable product, not just a code demo.
+90-Minute Take-Home Challenge: **Playlist Copilot**
+
+Build a small product that turns a natural-language playlist request into a useful result. The goal is to show how you scope, build, and iterate with AI tools under real time pressure.
+
+- Duration: 90 minutes hard limit
+
+- Required AI tooling: Use Claude Code, Codex, Cursor, or a similar AI coding tool
+
+- Required integration: Use at least one real music-related external API or service
+
+- Primary output: A working prototype plus a short recording of your workflow
+
+## Challenge
+
+Build a small product that helps a user turn a vague prompt into a playlist. The result should feel like a usable product, not just a code demo.
 
 ## Example prompts
 
@@ -44,7 +41,6 @@ usable product, not just a code demo.
 - Prefer a thoughtful solution where AI is used selectively, not everywhere.
 - We care about the product loop: prompt -> result -> refinement.
 
-
 ## Deliverables
 
 - A working project.
@@ -64,7 +60,6 @@ usable product, not just a code demo.
 - Engineering fundamentals: Data modeling, state flow, decomposition, and the split between deterministic logic and AI-driven behavior.
 
 - Scope and execution: How well you prioritize under time pressure and whether you ship a coherent outcome.
-
 
 ## Optional stretch ideas
 
