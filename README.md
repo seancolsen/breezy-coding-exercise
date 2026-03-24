@@ -24,7 +24,9 @@ Following the specs, creating a good user experience.
 
 ### What you would do next with more time
 
-Figure out how to play the full track, not just 30 seconds. I imagine this would require a different integration.
+- Figure out how to play the full track, not just 30 seconds. I imagine this would require a different integration.
+
+- Feature to save a playlist and manage multiple playlists
 
 ### Which external integration you chose and why
 
