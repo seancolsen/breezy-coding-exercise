@@ -14,16 +14,22 @@ interface TrackCardProps {
   track: Track;
   index: number;
   isPinned: boolean;
+  isActive: boolean;
   onRemove: () => void;
   onTogglePin: () => void;
+  onPlay: () => void;
+  onEnded: () => void;
 }
 
 export default function TrackCard({
   track,
   index,
   isPinned,
+  isActive,
   onRemove,
   onTogglePin,
+  onPlay,
+  onEnded,
 }: TrackCardProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -33,6 +39,12 @@ export default function TrackCard({
   const [isSeeking, setIsSeeking] = useState(false);
   const trackBarRef = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number | null>(null);
+  const prevActiveRef = useRef(false);
+  const isPlayingRef = useRef(false);
+  const onEndedRef = useRef(onEnded);
+
+  onEndedRef.current = onEnded;
+  isPlayingRef.current = isPlaying;
 
   const updateTime = useCallback(() => {
     if (audioRef.current && !isSeeking) {
@@ -63,9 +75,41 @@ export default function TrackCard({
     audio.addEventListener("ended", () => {
       setIsPlaying(false);
       setCurrentTime(0);
+      onEndedRef.current();
     });
     audioRef.current = audio;
   }
+
+  useEffect(() => {
+    const wasActive = prevActiveRef.current;
+    prevActiveRef.current = isActive;
+
+    if (!wasActive && isActive && !isPlayingRef.current) {
+      if (!track.previewUrl) return;
+      initAudio();
+      const audio = audioRef.current!;
+      if (audio.currentTime > 0) {
+        audio.currentTime = 0;
+        setCurrentTime(0);
+      }
+      audio.play();
+      setIsPlaying(true);
+      setShowTimeline(true);
+    } else if (wasActive && !isActive && isPlayingRef.current) {
+      audioRef.current?.pause();
+      setIsPlaying(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isActive]);
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   function togglePlay() {
     if (!track.previewUrl) return;
@@ -75,6 +119,7 @@ export default function TrackCard({
       audio.pause();
       setIsPlaying(false);
     } else {
+      onPlay();
       audio.play();
       setIsPlaying(true);
       setShowTimeline(true);

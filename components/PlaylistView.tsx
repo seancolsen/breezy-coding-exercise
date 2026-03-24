@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Playlist } from "@/lib/types";
 import TrackCard from "./TrackCard";
 
@@ -20,6 +21,26 @@ export default function PlaylistView({
   onRegenerate,
   isLoading,
 }: PlaylistViewProps) {
+  const [activeTrackId, setActiveTrackId] = useState<number | null>(null);
+
+  function handleTrackEnded(endedTrackId: number) {
+    setActiveTrackId((currentActiveId) => {
+      if (currentActiveId !== endedTrackId) return currentActiveId;
+
+      const currentIndex = playlist.tracks.findIndex(
+        (t) => t.id === endedTrackId,
+      );
+      if (currentIndex === -1) return null;
+
+      for (let i = currentIndex + 1; i < playlist.tracks.length; i++) {
+        if (playlist.tracks[i].previewUrl) {
+          return playlist.tracks[i].id;
+        }
+      }
+      return null;
+    });
+  }
+
   return (
     <div className="w-full space-y-4">
       <div className="flex items-start justify-between gap-4">
@@ -52,8 +73,11 @@ export default function PlaylistView({
             track={track}
             index={i}
             isPinned={pinnedIds.has(track.id)}
+            isActive={activeTrackId === track.id}
             onRemove={() => onRemoveTrack(track.id)}
             onTogglePin={() => onTogglePin(track.id)}
+            onPlay={() => setActiveTrackId(track.id)}
+            onEnded={() => handleTrackEnded(track.id)}
           />
         ))}
       </div>
