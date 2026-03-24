@@ -12,6 +12,10 @@
 
 1. Go to http://localhost:3000/
 
+## Screenshot
+
+![screenshot](./screenshots/screenshot-01.png)
+
 ## Q&A
 
 ### What you built
